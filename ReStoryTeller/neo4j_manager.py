@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
 from neo4j import GraphDatabase
 import logging
 from schemas import AIKnowledgeGraph
@@ -21,7 +21,7 @@ class Neo4jGraphManager:
         elif val is None:
             return "null"
         else:
-            return str(val)
+            return str(val).replace("'", "\\'")
 
     def create_indexes(self):
         # Important: Run this once to make lookups fast
