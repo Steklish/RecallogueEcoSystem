@@ -1,26 +1,32 @@
+from datetime import datetime
 import os
-from pyparsing import Optional
-import spacy
-from logger_config import get_logger
-from schemas import AIKnowledgeGraph
-from sqlite_entity_manager import SQLiteEntityManager
-from difflib import SequenceMatcher
+import re
 from typing import List, Tuple, Dict, Any, Optional
-from chroma_client import ChromaClient
+import spacy
+from schemas import AIKnowledgeGraph, Article
+from difflib import SequenceMatcher
+
+from logger_config import get_logger
 from generator import Generator
+from chroma_client import ChromaClient
+from sqlite_entity_manager import SQLiteEntityManager
+from neo4j_manager import Neo4jGraphManager
+
 logger = get_logger(__name__)
 
 
 
 class Processor:
 
-    def __init__(self, db: SQLiteEntityManager, chroma : ChromaClient, generator : Generator) -> None:
+    def __init__(self, db: SQLiteEntityManager, chroma : ChromaClient, generator : Generator, neo : Neo4jGraphManager) -> None:
         # sqlite db for entity storage
         self.db = db
         # chroma client for topics retrieval
         self.chroma = chroma
         # llm generator to generate pydantic-defined objects
         self.generator = generator
+        # neo4j manager for graph storage
+        self.neo = neo
         # Load Spacy
         try:
             nlp = spacy.load("ru_core_news_lg")
@@ -270,6 +276,55 @@ class Processor:
         )
         return res
     
+    
+    def _create_article_from_file(self, filename: str, text: str) -> Article:
+        """
+        Create an Article object from a file.
+
+        :param filename: Name of the file (used as title)
+        :param text: Full article text
+        :return: Article object
+        """
+        
+        def extract_date_from_path(filepath: str) -> str:
+            # Extract the directory containing the date (e.g., "01.02.2011")
+            parts = filepath.split(os.sep)
+            date_pattern = re.compile(r'\b(\d{2}\.\d{2}\.\d{4})\b')
+            
+            for part in parts:
+                match = date_pattern.search(part)
+                if match:
+                    date_str = match.group(1)
+                    # Convert to YYYY-MM-DD
+                    date_obj = datetime.strptime(date_str, "%d.%m.%Y")
+                    return date_obj.strftime("%Y-%m-%d")
+            
+            raise ValueError("No date found in the file path.")
+        
+        return self._create_article(
+            text=text,
+            title=filename.split('.')[0],
+            date=extract_date_from_path(filename)
+        )
+            
+            
+    def _create_article(self, text: str, title: str, date : str) -> Article:
+        """
+        Create an Article object from text and title.
+
+        :param text: Full article text
+        :param title: Article title
+        :return: Article object
+        """
+        
+        article = Article(
+            name=title,
+            text=text,
+            date=date
+        )
+        return article
+    
+    
     def process_file(self, filename):
         clean_filename = filename.strip()
         if not os.path.exists(clean_filename):
@@ -279,6 +334,14 @@ class Processor:
             with open(clean_filename, "r", encoding="utf-8") as f:
                 text = f.read()
             kg = self.get_KG_from_text(text)
+            article = self._create_article_from_file(clean_filename, text)
+            #generating queries
+            queries = self.neo.generate_cypher_queries(
+                article=article, 
+                graph_data=kg
+            )
+            
+            
             logger.info(f"Processed file {clean_filename}: {kg}")
             return kg
         except Exception as e:
