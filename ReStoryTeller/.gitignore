@@ -28,6 +28,7 @@ Desktop.ini
 *.swp
 *.swo
 \#*#
+*.db
 
 # --- Generic Logs & Databases ---
 *.log
