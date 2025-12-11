@@ -1,6 +1,7 @@
+from enum import Enum
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field, ConfigDict
-from pyparsing import Enum
+
 
 class GraphCategory(str, Enum):
     POLITICS = "Политика"
@@ -38,7 +39,7 @@ class AIRelationship(BaseModel):
         description="Specific date or timeframe of the relationship (YYYY-MM-DD)."
     )
 
-class article(BaseModel):
+class Article(BaseModel):
     name: str = Field(description="Article title")
     text: str = Field(description="Full article text")
     date: Optional[str] = Field(
