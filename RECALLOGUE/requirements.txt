@@ -1,0 +1,16 @@
+FastAPI
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+SQLAlchemy
+asyncpg
+python-dotenv
+uvicorn
+python-multipart
+google-generativeai
+requests
+chromadb
+pdfplumber
+python-docx
+chardet
+pytest

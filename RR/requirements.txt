@@ -1,0 +1,12 @@
+pydantic
+requests
+llama-cpp-python
+httpx
+fastapi
+uvicorn
+python-dotenv
+chromadb
+tiktoken
+Unstructured
+PyMuPDF
+pdfplumber

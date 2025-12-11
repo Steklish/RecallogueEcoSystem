@@ -1,0 +1,623 @@
+:root {
+  --background-color: #1c1c1e;
+  --text-color: #e1e1e0;
+  --primary-color: #a9967f;
+  --primary-color-fade: #7b7061;
+  --border-color: #3a3a3c;
+  --panel-background: #2a2a2c;
+  --panel-background-fade: #252526;
+  --input-background: #3a3a3c;
+  --hover-color: #4a4a4c;
+  --message-user-background: #3a3a3c;
+  --message-bot-background: #2a2a2c;
+  --success-color: #71b34f;
+  --error-color: #F44336;
+  --accent-color: #3a3a3a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for the entire app */
+body::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: var(--background-color);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 6px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-color);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-header {
+  background-color: var(--panel-background);
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0; /* Allows flex child to shrink below content height */
+}
+
+.search-and-tabs-container {
+  display: flex;
+  align-items: flex-start; /* Align to top so that elements align with the search bar */
+  padding: 0.5rem;
+  background-color: var(--panel-background-fade);
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.5rem; /* Space between search section and tab switch */
+  flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+.search-section {
+  flex: 1;
+  padding: 0; /* Remove internal padding since it's handled by the parent */
+  background-color: transparent; /* Background handled by parent container */
+  border: none; /* Border handled by parent container */
+  flex-shrink: 0; /* Prevents the search section from shrinking */
+  min-height: auto; /* Allow it to grow with content */
+}
+
+/* AI Menu Toggle - foldable dropdown menu */
+.ai-menu-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  padding: 0.5rem; /* Match the textarea padding */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-background);
+  margin-right: 0.5rem; /* Space between menu and search input */
+  align-self: flex-start; /* Align to top with text areas */
+  user-select: none;
+  margin-top: 0.125rem; /* Small adjustment to align with textarea */
+}
+
+.ai-menu-toggle:hover {
+  background-color: var(--hover-color);
+}
+
+.ai-menu-text {
+  margin-right: 0.25rem;
+  white-space: nowrap;
+}
+
+.ai-menu-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.ai-menu-arrow.open {
+  transform: rotate(180deg);
+}
+
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0; /* Remove any padding that might interfere */
+}
+
+.main-search-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start; /* Align items to the top */
+  margin-bottom: 0.5rem; /* Space between main search and AI prompt */
+}
+
+.ai-prompt-section {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start; /* Align items to the top */
+  margin-top: 0.5rem; /* Space above the AI prompt section */
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.search-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 4px;
+  height: 100%;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-button:hover {
+  background-color: var(--primary-color-fade);
+}
+
+.generate-query-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-start; /* Align to top */
+  margin-top: 0.5rem; /* Align with the top of the textarea */
+}
+
+.generate-query-button:hover {
+  background-color: var(--primary-color-fade);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0; /* Allows flex child to shrink below content height */
+}
+
+.network-container {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  border-right: 1px solid var(--border-color);
+  position: relative;
+  z-index: 1; /* Lower z-index to stay behind the tab switch */
+}
+
+.sidebar {
+  min-width: 200px;
+  max-width: 800px;
+  background-color: var(--panel-background);
+  border-left: 1px solid var(--border-color);
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* To position the resize handle */
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background-color: var(--panel-background);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-color);
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 10px;
+  height: 100%;
+  background-color: var(--border-color);
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.resize-handle:hover {
+  background-color: var(--primary-color);
+}
+
+.sidebar h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.node-details, .edge-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar p {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.sidebar strong {
+  color: var(--primary-color);
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row strong {
+  margin-bottom: 0.25rem;
+  color: var(--primary-color);
+}
+
+.detail-row span {
+  padding-left: 0.5rem;
+  word-wrap: break-word;
+}
+
+.properties-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.properties-section h4 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.property-item {
+  display: flex;
+  flex-direction: row;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--border-color-fade);
+}
+
+.property-item:last-child {
+  border-bottom: none;
+}
+
+.property-key {
+  font-weight: bold;
+  color: var(--primary-color);
+  min-width: 100px;
+  flex: 0 0 auto;
+}
+
+.property-value {
+  flex: 1;
+  word-wrap: break-word;
+}
+
+.app-loading, .app-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app-error h2 {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.app-error p {
+  margin-bottom: 0.5rem;
+}
+
+/* Search section styles */
+.textarea-wrapper, .ai-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden; /* Contain the line numbers */
+  background-color: var(--input-background);
+}
+
+.line-numbers {
+  width: 40px; /* Fixed width for line numbers */
+  text-align: right;
+  padding: 0.5rem 0.25rem 0.5rem 0.5rem;
+  user-select: none; /* Prevent line numbers from being selected */
+  color: #6c757d; /* Muted color for line numbers */
+  background-color: var(--panel-background-fade);
+  border-right: 1px solid var(--border-color);
+  white-space: pre; /* Preserve line breaks */
+  font-family: monospace; /* Use monospace font for consistent character width */
+  line-height: 1.5; /* Match textarea line height for alignment */
+  overflow: hidden;
+  flex-shrink: 0; /* Prevent line numbers from shrinking */
+  font-size: inherit; /* Ensure same font size as textarea */
+  box-sizing: border-box; /* Include padding in width calculation */
+  margin: 0;
+  display: flex;
+  align-items: flex-start; /* Align to start of container */
+  justify-content: flex-end; /* Right align the numbers */
+  padding-top: 0.5rem; /* Maintain top padding */
+  line-height: 1.5; /* Ensure consistent line height */
+}
+
+.search-textarea {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent; /* Transparent to match wrapper background */
+  color: var(--text-color);
+  font-family: monospace; /* Monospace font for code-like appearance */
+  resize: none; /* Disable manual resize since it auto-expands */
+  min-height: 30px;
+  height: auto; /* Allow height to adjust based on content */
+  max-height: 200px; /* Maximum height to prevent it from getting too large */
+  overflow-y: hidden; /* Hide scrollbar since it auto-expands */
+  width: 100%;
+  box-sizing: border-box;
+  outline: none; /* Remove focus outline as we style the wrapper */
+  line-height: 1.5; /* Set consistent line height */
+  margin: 0; /* Remove any default margin */
+  font-size: inherit; /* Ensure consistent font size */
+  min-width: 0; /* Allow flex item to shrink */
+  vertical-align: top; /* Align to top */
+  position: relative; /* Position relative for proper alignment */
+}
+
+/* Hidden div to calculate height needed for text content */
+.hidden-textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  height: auto;
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  font-family: monospace; /* Same font as textarea */
+  font-size: inherit;
+  line-height: 1.5; /* Match the textarea line height for consistency */
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: -1;
+  color: transparent; /* Make text invisible */
+  margin: 0; /* Ensure no margin conflicts */
+  display: block; /* Ensure it displays as block element */
+}
+
+.textarea-wrapper:focus-within {
+  border-color: var(--primary-color);
+}
+
+.search-textarea:focus {
+  outline: none;
+}
+
+.tab-switch-container {
+  display: flex;
+  gap: 1px;
+  z-index: 1000; /* Higher z-index to appear above graph */
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  align-self: flex-start; /* Align to the top of the search section */
+}
+
+.tab-switch {
+  padding: 0.5rem 1rem;
+  background-color: var(--panel-background);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  min-width: 80px;
+  text-align: center;
+}
+
+.tab-switch:hover {
+  background-color: var(--hover-color);
+}
+
+.tab-switch.active {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
+
+.search-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: 1.2rem;
+}
+
+.visualization-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Table visualization styles */
+.table-visualization {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  padding-top: 60px; /* Space for the tab switch */
+  background-color: var(--panel-background);
+  position: relative;
+  z-index: 1; /* Lower z-index to stay behind the tab switch */
+}
+
+/* Custom scrollbar for table visualization */
+.table-visualization::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-visualization::-webkit-scrollbar-track {
+  background-color: var(--panel-background);
+  border-radius: 4px;
+}
+
+.table-visualization::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+.table-visualization::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-color);
+}
+
+.table-visualization h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px); /* Account for header and padding */
+}
+
+/* Custom scrollbar for results container */
+.results-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.results-container::-webkit-scrollbar-track {
+  background-color: var(--panel-background);
+  border-radius: 4px;
+}
+
+.results-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+.results-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-color);
+}
+
+.results-section {
+  margin-bottom: 1.5rem;
+}
+
+.results-section h4 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.results-table th {
+  background-color: var(--panel-background);
+  color: var(--primary-color);
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.results-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.results-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.results-table tbody tr:hover {
+  background-color: var(--hover-color);
+}
+
+.table-row-clickable:hover {
+  background-color: var(--hover-color) !important;
+}
+
+/* Vis-network specific styles */
+.vis-network {
+  background-color: var(--background-color) !important;
+}
+
+.vis-node {
+  border-width: 2px !important;
+}
+
+.vis-edge {
+  stroke-width: 2px !important;
+}
+
+.vis-label {
+  color: var(--text-color) !important;
+}

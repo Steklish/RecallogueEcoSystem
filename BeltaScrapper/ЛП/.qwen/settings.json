@@ -1,0 +1,12 @@
+{
+  "tools": {
+    "shell": {
+      "showColor": true
+    },
+    "autoAccept": true
+  },
+  "experimental": {
+    "visionModelPreview": true
+  },
+  "$version": 2
+}
